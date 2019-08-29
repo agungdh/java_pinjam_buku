@@ -3,7 +3,7 @@
 -- Host: 127.0.0.1	Database: java_pinjam_buku
 -- ------------------------------------------------------
 -- Server version 	5.5.5-10.3.16-MariaDB
--- Date: Thu, 29 Aug 2019 10:28:37 +0200
+-- Date: Thu, 29 Aug 2019 10:37:03 +0200
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -15,6 +15,35 @@
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Table structure for table `admin`
+--
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `admin` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `username` varchar(191) NOT NULL,
+  `password` varchar(191) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `admin`
+--
+
+LOCK TABLES `admin` WRITE;
+/*!40000 ALTER TABLE `admin` DISABLE KEYS */;
+SET autocommit=0;
+INSERT INTO `admin` VALUES (9,'admin','21232f297a57a5a743894a0e4a801fc3');
+/*!40000 ALTER TABLE `admin` ENABLE KEYS */;
+UNLOCK TABLES;
+COMMIT;
+
+-- Dumped table `admin` with 1 row(s)
+--
 
 --
 -- Table structure for table `buku`
@@ -46,12 +75,12 @@ COMMIT;
 --
 
 --
--- Table structure for table `pinjem`
+-- Table structure for table `pinjam`
 --
 
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `pinjem` (
+CREATE TABLE `pinjam` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `id_siswa` int(11) NOT NULL,
   `id_buku` int(11) NOT NULL,
@@ -60,23 +89,23 @@ CREATE TABLE `pinjem` (
   PRIMARY KEY (`id`),
   KEY `id_buku` (`id_buku`),
   KEY `id_siswa` (`id_siswa`),
-  CONSTRAINT `pinjem_ibfk_1` FOREIGN KEY (`id_buku`) REFERENCES `buku` (`id`),
-  CONSTRAINT `pinjem_ibfk_2` FOREIGN KEY (`id_siswa`) REFERENCES `siswa` (`id`)
+  CONSTRAINT `pinjam_ibfk_1` FOREIGN KEY (`id_buku`) REFERENCES `buku` (`id`),
+  CONSTRAINT `pinjam_ibfk_2` FOREIGN KEY (`id_siswa`) REFERENCES `siswa` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `pinjem`
+-- Dumping data for table `pinjam`
 --
 
-LOCK TABLES `pinjem` WRITE;
-/*!40000 ALTER TABLE `pinjem` DISABLE KEYS */;
+LOCK TABLES `pinjam` WRITE;
+/*!40000 ALTER TABLE `pinjam` DISABLE KEYS */;
 SET autocommit=0;
-/*!40000 ALTER TABLE `pinjem` ENABLE KEYS */;
+/*!40000 ALTER TABLE `pinjam` ENABLE KEYS */;
 UNLOCK TABLES;
 COMMIT;
 
--- Dumped table `pinjem` with 0 row(s)
+-- Dumped table `pinjam` with 0 row(s)
 --
 
 --
@@ -117,4 +146,4 @@ COMMIT;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on: Thu, 29 Aug 2019 10:28:37 +0200
+-- Dump completed on: Thu, 29 Aug 2019 10:37:03 +0200

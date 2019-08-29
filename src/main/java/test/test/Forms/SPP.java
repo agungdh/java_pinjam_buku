@@ -41,9 +41,9 @@ import org.javalite.activejdbc.Base;
 import org.javalite.activejdbc.DBException;
 import org.javalite.activejdbc.LazyList;
 import test.test.Helpers.ADHhelper;
-import test.test.Models.KelasModel;
+import test.test.Models.BukuModel;
 import test.test.Models.SiswaModel;
-import test.test.Models.SppModel;
+import test.test.Models.PinjamModel;
 import test.test.Reports.Config;
 
 /**
@@ -129,7 +129,7 @@ public class SPP extends javax.swing.JFrame {
         }
     }
     
-    private void loadTableHelper(LazyList<SppModel> spps) {
+    private void loadTableHelper(LazyList<PinjamModel> spps) {
         model = new DefaultTableModel();
                 
         model.addColumn("#ID");
@@ -144,7 +144,7 @@ public class SPP extends javax.swing.JFrame {
         Base.open();
         
         try {
-            for(SppModel spp : spps) {
+            for(PinjamModel spp : spps) {
                 SiswaModel siswa = spp.parent(SiswaModel.class);                
                 model.addRow(new Object[]{
                     spp.getId(),
@@ -175,7 +175,7 @@ public class SPP extends javax.swing.JFrame {
     
     private void loadTable() {
         Base.open();
-        LazyList<SppModel> spps = SppModel.findAll();
+        LazyList<PinjamModel> spps = PinjamModel.findAll();
         Base.close();
         
         loadTableHelper(spps);
@@ -183,7 +183,7 @@ public class SPP extends javax.swing.JFrame {
 
     private void loadTable(String cari) {
         Base.open();
-        LazyList<SppModel> spps = SppModel.findBySQL("SELECT k.* FROM spp k, siswa s WHERE k.id_siswa = s.id AND (s.nis like ? OR s.nama like ?)", '%' + cari + '%', '%' + cari + '%');
+        LazyList<PinjamModel> spps = PinjamModel.findBySQL("SELECT k.* FROM spp k, siswa s WHERE k.id_siswa = s.id AND (s.nis like ? OR s.nama like ?)", '%' + cari + '%', '%' + cari + '%');
         Base.close();
         
         loadTableHelper(spps);
@@ -192,7 +192,7 @@ public class SPP extends javax.swing.JFrame {
     
     private void hapusData() {
         Base.open();
-        SppModel spp = SppModel.findById(ID);
+        PinjamModel spp = PinjamModel.findById(ID);
         try {
             spp.delete();
         } catch (DBException e) {
@@ -220,7 +220,7 @@ public class SPP extends javax.swing.JFrame {
     private void tambahData() {
         Base.open();
         try {
-            SppModel spp = new SppModel();
+            PinjamModel spp = new PinjamModel();
             spp.set("id_siswa", selectedComboSiswaIndex);
             spp.set("tanggal", ADHhelper.parseTanggal(Tanggal.getDate()));
             spp.set("spp", Spp.getValue());
@@ -237,7 +237,7 @@ public class SPP extends javax.swing.JFrame {
     private void ubahData() {
         Base.open();
         try {
-            SppModel spp = SppModel.findById(ID);
+            PinjamModel spp = PinjamModel.findById(ID);
             spp.set("id_siswa", selectedComboSiswaIndex);
             spp.set("tanggal", ADHhelper.parseTanggal(Tanggal.getDate()));
             spp.set("spp", Spp.getValue());
@@ -583,7 +583,7 @@ public class SPP extends javax.swing.JFrame {
             ID = model.getValueAt(i, 0).toString();
 
             Base.open();
-            SppModel spp = SppModel.findById(ID);
+            PinjamModel spp = PinjamModel.findById(ID);
             Base.close();
 
             try {
@@ -661,7 +661,7 @@ public class SPP extends javax.swing.JFrame {
 
     private void CetakActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CetakActionPerformed
         Base.open();
-        SppModel spp = SppModel.findById(ID);
+        PinjamModel spp = PinjamModel.findById(ID);
         SiswaModel siswa = spp.parent(SiswaModel.class);
         Base.close();
         

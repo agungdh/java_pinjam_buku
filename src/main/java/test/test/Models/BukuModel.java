@@ -13,6 +13,6 @@ import org.javalite.activejdbc.annotations.Table;
  *
  * @author user
  */
-@Table("kelas")
+@Table("buku")
 @BelongsTo(parent = SiswaModel.class, foreignKeyName = "id_siswa")
-public class KelasModel extends Model {}
+public class BukuModel extends Model {}

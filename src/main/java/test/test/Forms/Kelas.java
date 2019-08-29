@@ -41,7 +41,7 @@ import org.javalite.activejdbc.Base;
 import org.javalite.activejdbc.DBException;
 import org.javalite.activejdbc.LazyList;
 import test.test.Helpers.ADHhelper;
-import test.test.Models.KelasModel;
+import test.test.Models.BukuModel;
 import test.test.Models.SiswaModel;
 import test.test.Reports.Config;
 
@@ -128,7 +128,7 @@ public class Kelas extends javax.swing.JFrame {
         }
     }
     
-    private void loadTableHelper(LazyList<KelasModel> kelass) {
+    private void loadTableHelper(LazyList<BukuModel> kelass) {
         model = new DefaultTableModel();
                 
         model.addColumn("#ID");
@@ -144,7 +144,7 @@ public class Kelas extends javax.swing.JFrame {
         Base.open();
         
         try {
-            for(KelasModel kelas : kelass) {
+            for(BukuModel kelas : kelass) {
                 SiswaModel siswa = kelas.parent(SiswaModel.class);                
                 model.addRow(new Object[]{
                     kelas.getId(),
@@ -174,7 +174,7 @@ public class Kelas extends javax.swing.JFrame {
     
     private void loadTable() {
         Base.open();
-        LazyList<KelasModel> kelass = KelasModel.findAll();
+        LazyList<BukuModel> kelass = BukuModel.findAll();
         Base.close();
         
         loadTableHelper(kelass);
@@ -182,7 +182,7 @@ public class Kelas extends javax.swing.JFrame {
 
     private void loadTable(String cari) {
         Base.open();
-        LazyList<KelasModel> kelass = KelasModel.findBySQL("SELECT k.* FROM kelas k, siswa s WHERE k.id_siswa = s.id AND (s.nis like ? OR s.nama like ?)", '%' + cari + '%', '%' + cari + '%');
+        LazyList<BukuModel> kelass = BukuModel.findBySQL("SELECT k.* FROM kelas k, siswa s WHERE k.id_siswa = s.id AND (s.nis like ? OR s.nama like ?)", '%' + cari + '%', '%' + cari + '%');
         Base.close();
         
         loadTableHelper(kelass);
@@ -191,7 +191,7 @@ public class Kelas extends javax.swing.JFrame {
     
     private void hapusData() {
         Base.open();
-        KelasModel kelas = KelasModel.findById(ID);
+        BukuModel kelas = BukuModel.findById(ID);
         try {
             kelas.delete();
         } catch (DBException e) {
@@ -219,7 +219,7 @@ public class Kelas extends javax.swing.JFrame {
     private void tambahData() {
         Base.open();
         try {
-            KelasModel kelas = new KelasModel();
+            BukuModel kelas = new BukuModel();
             kelas.set("id_siswa", selectedComboSiswaIndex);
             kelas.set("nama", Kelas.getText());
             kelas.set("tahun_pelajaran", Tahun.getText());
@@ -237,7 +237,7 @@ public class Kelas extends javax.swing.JFrame {
     private void ubahData() {
         Base.open();
         try {
-            KelasModel kelas = KelasModel.findById(ID);
+            BukuModel kelas = BukuModel.findById(ID);
             kelas.set("id_siswa", selectedComboSiswaIndex);
             kelas.set("nama", Kelas.getText());
             kelas.set("tahun_pelajaran", Tahun.getText());
@@ -579,7 +579,7 @@ public class Kelas extends javax.swing.JFrame {
             ID = model.getValueAt(i, 0).toString();
 
             Base.open();
-            KelasModel kelas = KelasModel.findById(ID);
+            BukuModel kelas = BukuModel.findById(ID);
             Base.close();
 
             Kelas.setText(kelas.getString("nama"));

@@ -10,7 +10,7 @@ public class Config
         try
         {
             Class.forName("com.mysql.jdbc.Driver");
-            con = DriverManager.getConnection("jdbc:mysql://localhost/septyan","root","");
+            con = DriverManager.getConnection("jdbc:mysql://localhost/java_pinjam_buku","root","");
             return con;
         }
         catch (SQLException se)

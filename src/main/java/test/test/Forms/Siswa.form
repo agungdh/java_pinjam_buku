@@ -52,19 +52,13 @@
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="LabelCari2" alignment="0" min="-2" pref="82" max="-2" attributes="0"/>
-                          <Component id="LabelCari3" alignment="0" min="-2" pref="82" max="-2" attributes="0"/>
+                          <Component id="LabelCari2" min="-2" pref="82" max="-2" attributes="0"/>
+                          <Component id="LabelCari4" alignment="0" min="-2" pref="82" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace type="separate" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="Kelas" alignment="1" max="32767" attributes="0"/>
                           <Component id="Nis" pref="222" max="32767" attributes="0"/>
-                          <Group type="102" alignment="0" attributes="0">
-                              <EmptySpace min="10" pref="10" max="-2" attributes="0"/>
-                              <Component id="Laki" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace max="32767" attributes="0"/>
-                              <Component id="Perempuan" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace min="-2" pref="13" max="-2" attributes="0"/>
-                          </Group>
                       </Group>
                   </Group>
               </Group>
@@ -87,13 +81,12 @@
                   <Component id="LabelCari2" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="Nis" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="LabelCari3" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="Laki" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="Perempuan" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="Kelas" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="LabelCari4" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace min="-2" pref="17" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="21" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="ButtonTambahUbah" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="ButtonRefresh" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -228,26 +221,15 @@
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="NisActionPerformed"/>
       </Events>
     </Component>
-    <Component class="javax.swing.JLabel" name="LabelCari3">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="Jenis Kelamin"/>
-      </Properties>
-    </Component>
-    <Component class="javax.swing.JRadioButton" name="Laki">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="Laki-Laki"/>
-      </Properties>
+    <Component class="javax.swing.JTextField" name="Kelas">
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="LakiActionPerformed"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="KelasActionPerformed"/>
       </Events>
     </Component>
-    <Component class="javax.swing.JRadioButton" name="Perempuan">
+    <Component class="javax.swing.JLabel" name="LabelCari4">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Perempuan"/>
+        <Property name="text" type="java.lang.String" value="Kelas"/>
       </Properties>
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="PerempuanActionPerformed"/>
-      </Events>
     </Component>
   </SubComponents>
 </Form>

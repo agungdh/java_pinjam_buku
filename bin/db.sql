@@ -3,7 +3,7 @@
 -- Host: 127.0.0.1	Database: java_pinjam_buku
 -- ------------------------------------------------------
 -- Server version 	5.5.5-10.3.16-MariaDB
--- Date: Thu, 29 Aug 2019 10:37:03 +0200
+-- Date: Thu, 29 Aug 2019 10:49:53 +0200
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -120,7 +120,7 @@ CREATE TABLE `siswa` (
   `kelas` varchar(191) NOT NULL,
   `nis` varchar(191) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -130,11 +130,12 @@ CREATE TABLE `siswa` (
 LOCK TABLES `siswa` WRITE;
 /*!40000 ALTER TABLE `siswa` DISABLE KEYS */;
 SET autocommit=0;
+INSERT INTO `siswa` VALUES (1,'Agung Sapto Margono Dh','MI15A','15753003'),(4,'Test Orang 1','MI15B','15753001'),(5,'Test Orang 2','MI15C','15753002');
 /*!40000 ALTER TABLE `siswa` ENABLE KEYS */;
 UNLOCK TABLES;
 COMMIT;
 
--- Dumped table `siswa` with 0 row(s)
+-- Dumped table `siswa` with 3 row(s)
 --
 
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -146,4 +147,4 @@ COMMIT;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on: Thu, 29 Aug 2019 10:37:03 +0200
+-- Dump completed on: Thu, 29 Aug 2019 10:49:53 +0200

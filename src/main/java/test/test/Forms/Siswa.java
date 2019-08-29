@@ -90,7 +90,7 @@ public class Siswa extends javax.swing.JFrame {
         model.addColumn("#ID");
         model.addColumn("Nama");
         model.addColumn("NIS");
-        model.addColumn("Jenis Kelamin");
+        model.addColumn("Kelas");
         
         Base.open();
         
@@ -100,7 +100,7 @@ public class Siswa extends javax.swing.JFrame {
                     siswa.getId(),
                     siswa.getString("nama"),
                     siswa.getString("nis"),
-                    siswa.getString("jenis_kelamin"),
+                    siswa.getString("kelas"),
                 });
             }
         } catch (Exception e) {
@@ -167,11 +167,7 @@ public class Siswa extends javax.swing.JFrame {
             SiswaModel siswa = new SiswaModel();
             siswa.set("nama", Nama.getText());
             siswa.set("nis", Nis.getText());
-            if (Laki.isSelected()) {
-                siswa.set("jenis_kelamin", "Laki-Laki");   
-            } else {
-                siswa.set("jenis_kelamin", "Perempuan");
-            }
+            siswa.set("kelas", Kelas.getText());
             siswa.save();
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e.getMessage());
@@ -185,11 +181,7 @@ public class Siswa extends javax.swing.JFrame {
             SiswaModel siswa = SiswaModel.findById(ID);
             siswa.set("nama", Nama.getText());
             siswa.set("nis", Nis.getText());
-            if (Laki.isSelected()) {
-                siswa.set("jenis_kelamin", "Laki-Laki");   
-            } else {
-                siswa.set("jenis_kelamin", "Perempuan");
-            }
+            siswa.set("kelas", Kelas.getText());
             siswa.save();
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e.getMessage());
@@ -200,8 +192,7 @@ public class Siswa extends javax.swing.JFrame {
     private void resetForm() {
         Nama.setText("");
         Nis.setText("");
-        Laki.setSelected(false);
-        Perempuan.setSelected(false);
+        Kelas.setText("");
     }
 
     /**
@@ -226,9 +217,8 @@ public class Siswa extends javax.swing.JFrame {
         ButtonResetHapus = new javax.swing.JButton();
         LabelCari2 = new javax.swing.JLabel();
         Nis = new javax.swing.JTextField();
-        LabelCari3 = new javax.swing.JLabel();
-        Laki = new javax.swing.JRadioButton();
-        Perempuan = new javax.swing.JRadioButton();
+        Kelas = new javax.swing.JTextField();
+        LabelCari4 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Siswa");
@@ -322,21 +312,13 @@ public class Siswa extends javax.swing.JFrame {
             }
         });
 
-        LabelCari3.setText("Jenis Kelamin");
-
-        Laki.setText("Laki-Laki");
-        Laki.addActionListener(new java.awt.event.ActionListener() {
+        Kelas.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                LakiActionPerformed(evt);
+                KelasActionPerformed(evt);
             }
         });
 
-        Perempuan.setText("Perempuan");
-        Perempuan.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                PerempuanActionPerformed(evt);
-            }
-        });
+        LabelCari4.setText("Kelas");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -364,16 +346,11 @@ public class Siswa extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(LabelCari2, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(LabelCari3, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(LabelCari4, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(Nis, javax.swing.GroupLayout.DEFAULT_SIZE, 222, Short.MAX_VALUE)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(10, 10, 10)
-                                .addComponent(Laki)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(Perempuan)
-                                .addGap(13, 13, 13)))))
+                            .addComponent(Kelas, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(Nis, javax.swing.GroupLayout.DEFAULT_SIZE, 222, Short.MAX_VALUE))))
                 .addContainerGap(22, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -389,12 +366,11 @@ public class Siswa extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(LabelCari2)
                     .addComponent(Nis, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(LabelCari3)
-                    .addComponent(Laki)
-                    .addComponent(Perempuan))
-                .addGap(17, 17, 17)
+                    .addComponent(Kelas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(LabelCari4))
+                .addGap(21, 21, 21)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(ButtonTambahUbah)
                     .addComponent(ButtonRefresh)
@@ -434,13 +410,7 @@ public class Siswa extends javax.swing.JFrame {
 
             Nama.setText(siswa.getString("nama"));
             Nis.setText(siswa.getString("nis"));
-            if (siswa.getString("jenis_kelamin").equals("Laki-Laki")) {
-                Laki.setSelected(true);
-                Perempuan.setSelected(false); 
-            } else {
-                Perempuan.setSelected(true); 
-                Laki.setSelected(false);
-            }
+            Kelas.setText(siswa.getString("kelas"));
             
             setState("edit");
         }
@@ -452,8 +422,8 @@ public class Siswa extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(null, "Form Nama Masih Kosong !!!");
             } else if (Nis.getText().trim().equals("")) {
                 JOptionPane.showMessageDialog(null, "Form NIS Masih Kosong !!!");
-            } else if (!Laki.isSelected() && !Perempuan.isSelected()) {
-                JOptionPane.showMessageDialog(null, "Form Jenis Kelamin Belum Dipilih !!!");
+            } else if (Kelas.getText().trim().equals("")) {
+                JOptionPane.showMessageDialog(null, "Form Kelas Masih Kosong !!!");
             } else {
                 tambahData();
                 resetForm();
@@ -464,8 +434,8 @@ public class Siswa extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(null, "Form Nama Masih Kosong !!!");
             } else if (Nis.getText().trim().equals("")) {
                 JOptionPane.showMessageDialog(null, "Form NIS Masih Kosong !!!");
-            } else if (!Laki.isSelected() && !Perempuan.isSelected()) {
-                JOptionPane.showMessageDialog(null, "Form Jenis Kelamin Belum Dipilih !!!");
+            } else if (Kelas.getText().trim().equals("")) {
+                JOptionPane.showMessageDialog(null, "Form Kelas Masih Kosong !!!");
             } else {
                 ubahData();
                 resetForm();
@@ -495,13 +465,9 @@ public class Siswa extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_NisActionPerformed
 
-    private void LakiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LakiActionPerformed
-        Perempuan.setSelected(false);
-    }//GEN-LAST:event_LakiActionPerformed
-
-    private void PerempuanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PerempuanActionPerformed
-        Laki.setSelected(false);
-    }//GEN-LAST:event_PerempuanActionPerformed
+    private void KelasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_KelasActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_KelasActionPerformed
 
     /**
      * @param args the command line arguments
@@ -605,14 +571,13 @@ public class Siswa extends javax.swing.JFrame {
     private javax.swing.JButton ButtonRefresh;
     private javax.swing.JButton ButtonResetHapus;
     private javax.swing.JButton ButtonTambahUbah;
+    private javax.swing.JTextField Kelas;
     private javax.swing.JLabel LabelCari;
     private javax.swing.JLabel LabelCari1;
     private javax.swing.JLabel LabelCari2;
-    private javax.swing.JLabel LabelCari3;
-    private javax.swing.JRadioButton Laki;
+    private javax.swing.JLabel LabelCari4;
     private javax.swing.JTextField Nama;
     private javax.swing.JTextField Nis;
-    private javax.swing.JRadioButton Perempuan;
     private javax.swing.JScrollPane ScrollPane;
     private javax.swing.JTable TablePegawai;
     private javax.swing.JTextField TextCari;

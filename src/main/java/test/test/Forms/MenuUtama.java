@@ -216,13 +216,15 @@ public class MenuUtama extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton9ActionPerformed
 
     private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
-        new Pinjam().setVisible(true);
+        new Peminjaman().setVisible(true);
         
         this.dispose();
     }//GEN-LAST:event_jButton10ActionPerformed
 
     private void jButton11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton11ActionPerformed
-        // TODO add your handling code here:
+        new Pengembalian().setVisible(true);
+        
+        this.dispose();
     }//GEN-LAST:event_jButton11ActionPerformed
 
     /**

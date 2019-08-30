@@ -39,6 +39,8 @@ import org.javalite.activejdbc.Base;
 import org.javalite.activejdbc.DBException;
 import org.javalite.activejdbc.LazyList;
 import test.test.Helpers.ADHhelper;
+import test.test.Models.BukuModel;
+import test.test.Models.PengembalianModel;
 import test.test.Models.SiswaModel;
 import test.test.Reports.Config;
 
@@ -46,14 +48,22 @@ import test.test.Reports.Config;
  *
  * @author user
  */
-public class Siswa extends javax.swing.JFrame {
+public class Pengembalian extends javax.swing.JFrame {
+    private List<Integer> comboSiswaID = new ArrayList<Integer>();
+    private int comboSiswaIndex;
+    private int selectedComboSiswaIndex;
+    
+    private List<Integer> comboBukuID = new ArrayList<Integer>();
+    private int comboBukuIndex;
+    private int selectedComboBukuIndex;
+    
     private DefaultTableModel model = new DefaultTableModel();
     private String ID;
     private String state;
     /**
      * Creates new form PangkatGol
      */
-    public Siswa() {
+    public Pengembalian() {
         initComponents();
                 
         loadTable();
@@ -73,7 +83,41 @@ public class Siswa extends javax.swing.JFrame {
             }
         });
         
+        loadComboBox();
+        
         this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+    }
+    
+    public void loadComboBox() {
+        Siswa.removeAllItems();
+        
+        Base.open();
+        LazyList<SiswaModel> siswas = SiswaModel.findAll();
+        Base.close();
+        
+        Base.open();
+        for(SiswaModel siswa : siswas) {
+            Base.close();
+            comboSiswaID.add(Integer.parseInt(siswa.getString("id")));
+            Siswa.addItem(siswa.getString("nama"));
+            Base.open();
+        }
+        Base.close();
+
+        Buku.removeAllItems();
+        
+        Base.open();
+        LazyList<BukuModel> bukus = BukuModel.findAll();
+        Base.close();
+        
+        Base.open();
+        for(BukuModel buku : bukus) {
+            Base.close();
+            comboBukuID.add(Integer.parseInt(buku.getString("id")));
+            Buku.addItem(buku.getString("judul"));
+            Base.open();
+        }
+        Base.close();
     }
     
     public void cari() {
@@ -84,23 +128,25 @@ public class Siswa extends javax.swing.JFrame {
         }
     }
     
-    private void loadTableHelper(LazyList<SiswaModel> siswas) {
+    private void loadTableHelper(LazyList<PengembalianModel> pengembalians) {
         model = new DefaultTableModel();
                 
         model.addColumn("#ID");
         model.addColumn("Nama");
-        model.addColumn("NIS");
-        model.addColumn("Kelas");
+        model.addColumn("Buku");
+        model.addColumn("Tanggal");
         
         Base.open();
         
         try {
-            for(SiswaModel siswa : siswas) {                
+            for(PengembalianModel pengembalian : pengembalians) {          
+                SiswaModel siswa = pengembalian.parent(SiswaModel.class);
+                BukuModel buku = pengembalian.parent(BukuModel.class);
                 model.addRow(new Object[]{
-                    siswa.getId(),
+                    pengembalian.getId(),
                     siswa.getString("nama"),
-                    siswa.getString("nis"),
-                    siswa.getString("kelas"),
+                    buku.getString("judul"),
+                    ADHhelper.tanggalIndo(pengembalian.getString("tanggal")),
                 });
             }
         } catch (Exception e) {
@@ -119,26 +165,26 @@ public class Siswa extends javax.swing.JFrame {
     
     private void loadTable() {
         Base.open();
-        LazyList<SiswaModel> siswas = SiswaModel.findAll();
+        LazyList<PengembalianModel> pengembalians = PengembalianModel.findAll();
         Base.close();
         
-        loadTableHelper(siswas);
+        loadTableHelper(pengembalians);
     }
 
     private void loadTable(String cari) {
         Base.open();
-        LazyList<SiswaModel> siswas = SiswaModel.where("nis like ? OR nama like ?", '%' + cari + '%', '%' + cari + '%');
+        LazyList<PengembalianModel> pengembalians = PengembalianModel.findBySQL("SELECT p.* FROM pengembalian p, siswa s, buku b WHERE p.id_siswa = s.id AND p.id_buku = b.id AND (s.nama like ? OR b.judul like ?)", '%' + cari + '%', '%' + cari + '%');
         Base.close();
         
-        loadTableHelper(siswas);
+        loadTableHelper(pengembalians);
     }
 
     
     private void hapusData() {
         Base.open();
-        SiswaModel siswa = SiswaModel.findById(ID);
+        PengembalianModel pengembalian = PengembalianModel.findById(ID);
         try {
-            siswa.delete();
+            pengembalian.delete();
         } catch (DBException e) {
             JOptionPane.showMessageDialog(null, e.getLocalizedMessage());
         }
@@ -164,11 +210,11 @@ public class Siswa extends javax.swing.JFrame {
     private void tambahData() {
         Base.open();
         try {
-            SiswaModel siswa = new SiswaModel();
-            siswa.set("nama", Nama.getText());
-            siswa.set("nis", Nis.getText());
-            siswa.set("kelas", Kelas.getText());
-            siswa.save();
+            PengembalianModel pengembalian = new PengembalianModel();
+            pengembalian.set("id_siswa", selectedComboSiswaIndex);
+            pengembalian.set("id_buku", selectedComboBukuIndex);
+            pengembalian.set("tanggal", ADHhelper.parseTanggal(Tanggal.getDate()));
+            pengembalian.save();
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e.getMessage());
         }
@@ -178,11 +224,11 @@ public class Siswa extends javax.swing.JFrame {
     private void ubahData() {
         Base.open();
         try {
-            SiswaModel siswa = SiswaModel.findById(ID);
-            siswa.set("nama", Nama.getText());
-            siswa.set("nis", Nis.getText());
-            siswa.set("kelas", Kelas.getText());
-            siswa.save();
+            PengembalianModel pengembalian = PengembalianModel.findById(ID);
+            pengembalian.set("id_siswa", selectedComboSiswaIndex);
+            pengembalian.set("id_buku", selectedComboBukuIndex);
+            pengembalian.set("tanggal", ADHhelper.parseTanggal(Tanggal.getDate()));
+            pengembalian.save();
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e.getMessage());
         }
@@ -190,9 +236,9 @@ public class Siswa extends javax.swing.JFrame {
     }
 
     private void resetForm() {
-        Nama.setText("");
-        Nis.setText("");
-        Kelas.setText("");
+        Siswa.setSelectedIndex(0);
+        Buku.setSelectedIndex(0);
+        Tanggal.setDate(null);
     }
 
     /**
@@ -208,20 +254,20 @@ public class Siswa extends javax.swing.JFrame {
         TablePegawai = new javax.swing.JTable();
         TextCari = new javax.swing.JTextField();
         LabelCari = new javax.swing.JLabel();
-        Nama = new javax.swing.JTextField();
         LabelCari1 = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         ButtonRefresh = new javax.swing.JButton();
         ButtonTambahUbah = new javax.swing.JButton();
         ButtonResetHapus = new javax.swing.JButton();
+        Siswa = new javax.swing.JComboBox<>();
         LabelCari2 = new javax.swing.JLabel();
-        Nis = new javax.swing.JTextField();
-        Kelas = new javax.swing.JTextField();
         LabelCari4 = new javax.swing.JLabel();
+        Tanggal = new com.toedter.calendar.JDateChooser();
+        Buku = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Siswa");
+        setTitle("Pengembalian");
         setResizable(false);
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent evt) {
@@ -251,36 +297,30 @@ public class Siswa extends javax.swing.JFrame {
             }
         });
 
-        LabelCari.setText("Cari (NIS/Nama)");
+        LabelCari.setText("Cari");
 
-        Nama.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                NamaActionPerformed(evt);
-            }
-        });
-
-        LabelCari1.setText("Nama");
+        LabelCari1.setText("Siswa");
 
         jPanel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
-        jLabel1.setText("SISWA");
+        jLabel1.setText("PENGEMBALIAN");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(220, 220, 220)
+                .addGap(185, 185, 185)
                 .addComponent(jLabel1)
-                .addContainerGap(241, Short.MAX_VALUE))
+                .addContainerGap(162, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
                 .addComponent(jLabel1)
-                .addContainerGap())
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         ButtonRefresh.setText("Refresh");
@@ -304,21 +344,35 @@ public class Siswa extends javax.swing.JFrame {
             }
         });
 
-        LabelCari2.setText("NIS");
-
-        Nis.addActionListener(new java.awt.event.ActionListener() {
+        Siswa.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        Siswa.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                SiswaItemStateChanged(evt);
+            }
+        });
+        Siswa.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                NisActionPerformed(evt);
+                SiswaActionPerformed(evt);
             }
         });
 
-        Kelas.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                KelasActionPerformed(evt);
+        LabelCari2.setText("Buku");
+
+        LabelCari4.setText("Tanggal");
+
+        Tanggal.setDateFormatString("dd-MM-yyyy");
+
+        Buku.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        Buku.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                BukuItemStateChanged(evt);
             }
         });
-
-        LabelCari4.setText("Kelas");
+        Buku.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BukuActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -340,19 +394,17 @@ public class Siswa extends javax.swing.JFrame {
                             .addComponent(LabelCari)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                             .addComponent(TextCari))
-                        .addComponent(ScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                        .addGroup(layout.createSequentialGroup()
-                            .addComponent(LabelCari1, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGap(18, 18, 18)
-                            .addComponent(Nama))
+                        .addComponent(ScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 546, Short.MAX_VALUE)
                         .addGroup(layout.createSequentialGroup()
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                 .addComponent(LabelCari2, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(LabelCari4, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGap(18, 18, 18)
+                                .addComponent(LabelCari4, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(LabelCari1, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(Kelas, javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addComponent(Nis, javax.swing.GroupLayout.DEFAULT_SIZE, 446, Short.MAX_VALUE)))))
+                                .addComponent(Siswa, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(Tanggal, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(Buku, javax.swing.GroupLayout.Alignment.TRAILING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -363,16 +415,16 @@ public class Siswa extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(LabelCari1)
-                    .addComponent(Nama, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(Siswa, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(LabelCari2)
-                    .addComponent(Nis, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(Buku, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(Kelas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(Tanggal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(LabelCari4))
-                .addGap(21, 21, 21)
+                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(ButtonTambahUbah)
                     .addComponent(ButtonRefresh)
@@ -382,7 +434,7 @@ public class Siswa extends javax.swing.JFrame {
                     .addComponent(TextCari, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(LabelCari))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(ScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 281, Short.MAX_VALUE)
+                .addComponent(ScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 284, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -407,12 +459,16 @@ public class Siswa extends javax.swing.JFrame {
             ID = model.getValueAt(i, 0).toString();
 
             Base.open();
-            SiswaModel siswa = SiswaModel.findById(ID);
+            PengembalianModel pengembalian = PengembalianModel.findById(ID);
             Base.close();
-
-            Nama.setText(siswa.getString("nama"));
-            Nis.setText(siswa.getString("nis"));
-            Kelas.setText(siswa.getString("kelas"));
+            
+            Siswa.setSelectedIndex(comboSiswaID.indexOf(Integer.parseInt(pengembalian.getString("id_siswa"))));
+            Buku.setSelectedIndex(comboBukuID.indexOf(Integer.parseInt(pengembalian.getString("id_buku"))));
+            try {
+                Tanggal.setDate(ADHhelper.getTanggalFromDB(pengembalian.getString("tanggal")));
+            } catch (ParseException ex) {
+                Logger.getLogger(Pengembalian.class.getName()).log(Level.SEVERE, null, ex);
+            }
             
             setState("edit");
         }
@@ -420,24 +476,16 @@ public class Siswa extends javax.swing.JFrame {
 
     private void ButtonTambahUbahActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ButtonTambahUbahActionPerformed
         if (state.equals("index")) {
-            if (Nama.getText().trim().equals("")) {
-                JOptionPane.showMessageDialog(null, "Form Nama Masih Kosong !!!");
-            } else if (Nis.getText().trim().equals("")) {
-                JOptionPane.showMessageDialog(null, "Form NIS Masih Kosong !!!");
-            } else if (Kelas.getText().trim().equals("")) {
-                JOptionPane.showMessageDialog(null, "Form Kelas Masih Kosong !!!");
+            if (Tanggal.getDate() == null) {
+                JOptionPane.showMessageDialog(null, "Form Tanggal Masih Kosong !!!");
             } else {
                 tambahData();
                 resetForm();
                 loadTable();
             }
         } else {
-            if (Nama.getText().trim().equals("")) {
-                JOptionPane.showMessageDialog(null, "Form Nama Masih Kosong !!!");
-            } else if (Nis.getText().trim().equals("")) {
-                JOptionPane.showMessageDialog(null, "Form NIS Masih Kosong !!!");
-            } else if (Kelas.getText().trim().equals("")) {
-                JOptionPane.showMessageDialog(null, "Form Kelas Masih Kosong !!!");
+            if (Tanggal.getDate() == null) {
+                JOptionPane.showMessageDialog(null, "Form Tanggal Masih Kosong !!!");
             } else {
                 ubahData();
                 resetForm();
@@ -459,17 +507,27 @@ public class Siswa extends javax.swing.JFrame {
         cari();
     }//GEN-LAST:event_TextCariActionPerformed
 
-    private void NamaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_NamaActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_NamaActionPerformed
+    private void SiswaItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_SiswaItemStateChanged
 
-    private void NisActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_NisActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_NisActionPerformed
+    }//GEN-LAST:event_SiswaItemStateChanged
 
-    private void KelasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_KelasActionPerformed
+    private void SiswaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SiswaActionPerformed
+        comboSiswaIndex = Siswa.getSelectedIndex();
+        if (comboSiswaIndex >= 0) {
+            selectedComboSiswaIndex = comboSiswaID.get(comboSiswaIndex);
+        }
+    }//GEN-LAST:event_SiswaActionPerformed
+
+    private void BukuItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_BukuItemStateChanged
         // TODO add your handling code here:
-    }//GEN-LAST:event_KelasActionPerformed
+    }//GEN-LAST:event_BukuItemStateChanged
+
+    private void BukuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BukuActionPerformed
+        comboBukuIndex = Buku.getSelectedIndex();
+        if (comboBukuIndex >= 0) {
+            selectedComboBukuIndex = comboBukuID.get(comboBukuIndex);
+        }
+    }//GEN-LAST:event_BukuActionPerformed
 
     /**
      * @param args the command line arguments
@@ -488,14 +546,206 @@ public class Siswa extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Siswa.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Pengembalian.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Siswa.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Pengembalian.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Siswa.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Pengembalian.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Siswa.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Pengembalian.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
         //</editor-fold>
         //</editor-fold>
         //</editor-fold>
@@ -564,24 +814,24 @@ public class Siswa extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Siswa().setVisible(true);
+                new Pengembalian().setVisible(true);
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JComboBox<String> Buku;
     private javax.swing.JButton ButtonRefresh;
     private javax.swing.JButton ButtonResetHapus;
     private javax.swing.JButton ButtonTambahUbah;
-    private javax.swing.JTextField Kelas;
     private javax.swing.JLabel LabelCari;
     private javax.swing.JLabel LabelCari1;
     private javax.swing.JLabel LabelCari2;
     private javax.swing.JLabel LabelCari4;
-    private javax.swing.JTextField Nama;
-    private javax.swing.JTextField Nis;
     private javax.swing.JScrollPane ScrollPane;
+    private javax.swing.JComboBox<String> Siswa;
     private javax.swing.JTable TablePegawai;
+    private com.toedter.calendar.JDateChooser Tanggal;
     private javax.swing.JTextField TextCari;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;

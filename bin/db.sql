@@ -3,7 +3,7 @@
 -- Host: 127.0.0.1	Database: java_pinjam_buku
 -- ------------------------------------------------------
 -- Server version 	5.5.5-10.3.16-MariaDB
--- Date: Fri, 30 Aug 2019 04:15:36 +0200
+-- Date: Fri, 30 Aug 2019 05:12:10 +0200
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -57,7 +57,7 @@ CREATE TABLE `buku` (
   `pengarang` varchar(191) NOT NULL,
   `penerbit` varchar(191) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -91,7 +91,7 @@ CREATE TABLE `peminjaman` (
   KEY `id_siswa` (`id_siswa`),
   CONSTRAINT `peminjaman_ibfk_1` FOREIGN KEY (`id_buku`) REFERENCES `buku` (`id`),
   CONSTRAINT `peminjaman_ibfk_2` FOREIGN KEY (`id_siswa`) REFERENCES `siswa` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -101,11 +101,12 @@ CREATE TABLE `peminjaman` (
 LOCK TABLES `peminjaman` WRITE;
 /*!40000 ALTER TABLE `peminjaman` DISABLE KEYS */;
 SET autocommit=0;
+INSERT INTO `peminjaman` VALUES (1,4,2,'2019-08-09'),(2,4,2,'2019-08-30'),(3,5,1,'2019-08-09');
 /*!40000 ALTER TABLE `peminjaman` ENABLE KEYS */;
 UNLOCK TABLES;
 COMMIT;
 
--- Dumped table `peminjaman` with 0 row(s)
+-- Dumped table `peminjaman` with 3 row(s)
 --
 
 --
@@ -124,7 +125,7 @@ CREATE TABLE `pengembalian` (
   KEY `id_siswa` (`id_siswa`),
   CONSTRAINT `pengembalian_ibfk_1` FOREIGN KEY (`id_buku`) REFERENCES `buku` (`id`),
   CONSTRAINT `pengembalian_ibfk_2` FOREIGN KEY (`id_siswa`) REFERENCES `siswa` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -134,11 +135,12 @@ CREATE TABLE `pengembalian` (
 LOCK TABLES `pengembalian` WRITE;
 /*!40000 ALTER TABLE `pengembalian` DISABLE KEYS */;
 SET autocommit=0;
+INSERT INTO `pengembalian` VALUES (1,1,2,'2019-08-06'),(2,4,1,'2019-08-01');
 /*!40000 ALTER TABLE `pengembalian` ENABLE KEYS */;
 UNLOCK TABLES;
 COMMIT;
 
--- Dumped table `pengembalian` with 0 row(s)
+-- Dumped table `pengembalian` with 2 row(s)
 --
 
 --
@@ -153,7 +155,7 @@ CREATE TABLE `siswa` (
   `kelas` varchar(191) NOT NULL,
   `nis` varchar(191) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -180,4 +182,4 @@ COMMIT;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on: Fri, 30 Aug 2019 04:15:36 +0200
+-- Dump completed on: Fri, 30 Aug 2019 05:12:10 +0200

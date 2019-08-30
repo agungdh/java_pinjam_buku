@@ -3,7 +3,7 @@
 -- Host: 127.0.0.1	Database: java_pinjam_buku
 -- ------------------------------------------------------
 -- Server version 	5.5.5-10.3.16-MariaDB
--- Date: Fri, 30 Aug 2019 06:02:54 +0200
+-- Date: Fri, 30 Aug 2019 06:16:33 +0200
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -149,4 +149,4 @@ COMMIT;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on: Fri, 30 Aug 2019 06:02:54 +0200
+-- Dump completed on: Fri, 30 Aug 2019 06:16:33 +0200

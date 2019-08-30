@@ -74,7 +74,7 @@ public class MenuUtama extends javax.swing.JFrame {
             }
         });
 
-        jButton8.setText("LAPORAN PEMINJAMAN");
+        jButton8.setText("CETAK LAPORAN");
         jButton8.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton8ActionPerformed(evt);

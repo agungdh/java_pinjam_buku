@@ -3,7 +3,7 @@
 -- Host: 127.0.0.1	Database: java_pinjam_buku
 -- ------------------------------------------------------
 -- Server version 	5.5.5-10.3.16-MariaDB
--- Date: Fri, 30 Aug 2019 05:12:10 +0200
+-- Date: Fri, 30 Aug 2019 06:02:54 +0200
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -85,13 +85,14 @@ CREATE TABLE `peminjaman` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `id_siswa` int(11) NOT NULL,
   `id_buku` int(11) NOT NULL,
-  `tanggal` date NOT NULL,
+  `tanggal_peminjaman` date NOT NULL,
+  `tanggal_pengembalian` date DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `id_buku` (`id_buku`),
   KEY `id_siswa` (`id_siswa`),
   CONSTRAINT `peminjaman_ibfk_1` FOREIGN KEY (`id_buku`) REFERENCES `buku` (`id`),
   CONSTRAINT `peminjaman_ibfk_2` FOREIGN KEY (`id_siswa`) REFERENCES `siswa` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -101,46 +102,12 @@ CREATE TABLE `peminjaman` (
 LOCK TABLES `peminjaman` WRITE;
 /*!40000 ALTER TABLE `peminjaman` DISABLE KEYS */;
 SET autocommit=0;
-INSERT INTO `peminjaman` VALUES (1,4,2,'2019-08-09'),(2,4,2,'2019-08-30'),(3,5,1,'2019-08-09');
+INSERT INTO `peminjaman` VALUES (1,4,2,'2019-08-09','2019-08-09'),(3,5,1,'2019-08-09','2019-08-09'),(5,5,1,'2019-08-05','2019-08-24');
 /*!40000 ALTER TABLE `peminjaman` ENABLE KEYS */;
 UNLOCK TABLES;
 COMMIT;
 
 -- Dumped table `peminjaman` with 3 row(s)
---
-
---
--- Table structure for table `pengembalian`
---
-
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `pengembalian` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `id_siswa` int(11) NOT NULL,
-  `id_buku` int(11) NOT NULL,
-  `tanggal` date NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `id_buku` (`id_buku`),
-  KEY `id_siswa` (`id_siswa`),
-  CONSTRAINT `pengembalian_ibfk_1` FOREIGN KEY (`id_buku`) REFERENCES `buku` (`id`),
-  CONSTRAINT `pengembalian_ibfk_2` FOREIGN KEY (`id_siswa`) REFERENCES `siswa` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `pengembalian`
---
-
-LOCK TABLES `pengembalian` WRITE;
-/*!40000 ALTER TABLE `pengembalian` DISABLE KEYS */;
-SET autocommit=0;
-INSERT INTO `pengembalian` VALUES (1,1,2,'2019-08-06'),(2,4,1,'2019-08-01');
-/*!40000 ALTER TABLE `pengembalian` ENABLE KEYS */;
-UNLOCK TABLES;
-COMMIT;
-
--- Dumped table `pengembalian` with 2 row(s)
 --
 
 --
@@ -182,4 +149,4 @@ COMMIT;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on: Fri, 30 Aug 2019 05:12:10 +0200
+-- Dump completed on: Fri, 30 Aug 2019 06:02:54 +0200

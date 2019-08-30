@@ -146,7 +146,7 @@ public class Peminjaman extends javax.swing.JFrame {
                     peminjaman.getId(),
                     siswa.getString("nama"),
                     buku.getString("judul"),
-                    ADHhelper.tanggalIndo(peminjaman.getString("tanggal")),
+                    ADHhelper.tanggalIndo(peminjaman.getString("tanggal_peminjaman")),
                 });
             }
         } catch (Exception e) {
@@ -213,7 +213,7 @@ public class Peminjaman extends javax.swing.JFrame {
             PeminjamanModel peminjaman = new PeminjamanModel();
             peminjaman.set("id_siswa", selectedComboSiswaIndex);
             peminjaman.set("id_buku", selectedComboBukuIndex);
-            peminjaman.set("tanggal", ADHhelper.parseTanggal(Tanggal.getDate()));
+            peminjaman.set("tanggal_peminjaman", ADHhelper.parseTanggal(Tanggal.getDate()));
             peminjaman.save();
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e.getMessage());
@@ -227,7 +227,7 @@ public class Peminjaman extends javax.swing.JFrame {
             PeminjamanModel peminjaman = PeminjamanModel.findById(ID);
             peminjaman.set("id_siswa", selectedComboSiswaIndex);
             peminjaman.set("id_buku", selectedComboBukuIndex);
-            peminjaman.set("tanggal", ADHhelper.parseTanggal(Tanggal.getDate()));
+            peminjaman.set("tanggal_peminjaman", ADHhelper.parseTanggal(Tanggal.getDate()));
             peminjaman.save();
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e.getMessage());
@@ -465,7 +465,7 @@ public class Peminjaman extends javax.swing.JFrame {
             Siswa.setSelectedIndex(comboSiswaID.indexOf(Integer.parseInt(peminjaman.getString("id_siswa"))));
             Buku.setSelectedIndex(comboBukuID.indexOf(Integer.parseInt(peminjaman.getString("id_buku"))));
             try {
-                Tanggal.setDate(ADHhelper.getTanggalFromDB(peminjaman.getString("tanggal")));
+                Tanggal.setDate(ADHhelper.getTanggalFromDB(peminjaman.getString("tanggal_peminjaman")));
             } catch (ParseException ex) {
                 Logger.getLogger(Peminjaman.class.getName()).log(Level.SEVERE, null, ex);
             }

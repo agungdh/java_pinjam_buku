@@ -40,7 +40,7 @@ import org.javalite.activejdbc.DBException;
 import org.javalite.activejdbc.LazyList;
 import test.test.Helpers.ADHhelper;
 import test.test.Models.BukuModel;
-import test.test.Models.PengembalianModel;
+import test.test.Models.PeminjamanModel;
 import test.test.Models.SiswaModel;
 import test.test.Reports.Config;
 
@@ -128,7 +128,9 @@ public class Pengembalian extends javax.swing.JFrame {
         }
     }
     
-    private void loadTableHelper(LazyList<PengembalianModel> pengembalians) {
+    private void loadTableHelper(LazyList<PeminjamanModel> peminjamans) {
+        Siswa.setEnabled(true);
+        Buku.setEnabled(true);
         model = new DefaultTableModel();
                 
         model.addColumn("#ID");
@@ -139,14 +141,14 @@ public class Pengembalian extends javax.swing.JFrame {
         Base.open();
         
         try {
-            for(PengembalianModel pengembalian : pengembalians) {          
-                SiswaModel siswa = pengembalian.parent(SiswaModel.class);
-                BukuModel buku = pengembalian.parent(BukuModel.class);
+            for(PeminjamanModel peminjaman : peminjamans) {          
+                SiswaModel siswa = peminjaman.parent(SiswaModel.class);
+                BukuModel buku = peminjaman.parent(BukuModel.class);
                 model.addRow(new Object[]{
-                    pengembalian.getId(),
+                    peminjaman.getId(),
                     siswa.getString("nama"),
                     buku.getString("judul"),
-                    ADHhelper.tanggalIndo(pengembalian.getString("tanggal")),
+                    ADHhelper.tanggalIndo(peminjaman.getString("tanggal_pengembalian")),
                 });
             }
         } catch (Exception e) {
@@ -165,26 +167,27 @@ public class Pengembalian extends javax.swing.JFrame {
     
     private void loadTable() {
         Base.open();
-        LazyList<PengembalianModel> pengembalians = PengembalianModel.findAll();
+        LazyList<PeminjamanModel> peminjamans = PeminjamanModel.where("tanggal_pengembalian IS NOT null");
         Base.close();
         
-        loadTableHelper(pengembalians);
+        loadTableHelper(peminjamans);
     }
 
     private void loadTable(String cari) {
         Base.open();
-        LazyList<PengembalianModel> pengembalians = PengembalianModel.findBySQL("SELECT p.* FROM pengembalian p, siswa s, buku b WHERE p.id_siswa = s.id AND p.id_buku = b.id AND (s.nama like ? OR b.judul like ?)", '%' + cari + '%', '%' + cari + '%');
+        LazyList<PeminjamanModel> peminjamans = PeminjamanModel.findBySQL("SELECT p.* FROM peminjaman p, siswa s, buku b WHERE p.id_siswa = s.id AND p.id_buku = b.id AND (s.nama like ? OR b.judul like ?)", '%' + cari + '%', '%' + cari + '%');
         Base.close();
         
-        loadTableHelper(pengembalians);
+        loadTableHelper(peminjamans);
     }
 
     
     private void hapusData() {
         Base.open();
-        PengembalianModel pengembalian = PengembalianModel.findById(ID);
+        PeminjamanModel peminjaman = PeminjamanModel.findById(ID);
         try {
-            pengembalian.delete();
+            peminjaman.set("tanggal_pengembalian", null);
+            peminjaman.save();
         } catch (DBException e) {
             JOptionPane.showMessageDialog(null, e.getLocalizedMessage());
         }
@@ -209,14 +212,17 @@ public class Pengembalian extends javax.swing.JFrame {
     
     private void tambahData() {
         Base.open();
-        try {
-            PengembalianModel pengembalian = new PengembalianModel();
-            pengembalian.set("id_siswa", selectedComboSiswaIndex);
-            pengembalian.set("id_buku", selectedComboBukuIndex);
-            pengembalian.set("tanggal", ADHhelper.parseTanggal(Tanggal.getDate()));
-            pengembalian.save();
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, e.getMessage());
+        LazyList<PeminjamanModel> caris = PeminjamanModel.where("id_siswa = ? AND id_buku = ? AND tanggal_pengembalian IS NULL", selectedComboSiswaIndex, selectedComboBukuIndex);
+        if (caris.size() > 0) {
+            try {
+                PeminjamanModel peminjaman = caris.get(0);
+                peminjaman.set("tanggal_pengembalian", ADHhelper.parseTanggal(Tanggal.getDate()));
+                peminjaman.save();
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, e.getMessage());
+            }   
+        } else {
+            JOptionPane.showMessageDialog(null, "Tidak ada data peminjaman untuk siswa dan buku terpilih...");
         }
         Base.close();
     }
@@ -224,11 +230,9 @@ public class Pengembalian extends javax.swing.JFrame {
     private void ubahData() {
         Base.open();
         try {
-            PengembalianModel pengembalian = PengembalianModel.findById(ID);
-            pengembalian.set("id_siswa", selectedComboSiswaIndex);
-            pengembalian.set("id_buku", selectedComboBukuIndex);
-            pengembalian.set("tanggal", ADHhelper.parseTanggal(Tanggal.getDate()));
-            pengembalian.save();
+            PeminjamanModel peminjaman = PeminjamanModel.findById(ID);
+            peminjaman.set("tanggal_pengembalian", ADHhelper.parseTanggal(Tanggal.getDate()));
+            peminjaman.save();
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e.getMessage());
         }
@@ -456,16 +460,18 @@ public class Pengembalian extends javax.swing.JFrame {
     private void TablePegawaiMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TablePegawaiMouseClicked
         int i =TablePegawai.getSelectedRow();
         if(i>=0){
+            Siswa.setEnabled(false);
+            Buku.setEnabled(false);
             ID = model.getValueAt(i, 0).toString();
 
             Base.open();
-            PengembalianModel pengembalian = PengembalianModel.findById(ID);
+            PeminjamanModel peminjaman = PeminjamanModel.findById(ID);
             Base.close();
             
-            Siswa.setSelectedIndex(comboSiswaID.indexOf(Integer.parseInt(pengembalian.getString("id_siswa"))));
-            Buku.setSelectedIndex(comboBukuID.indexOf(Integer.parseInt(pengembalian.getString("id_buku"))));
+            Siswa.setSelectedIndex(comboSiswaID.indexOf(Integer.parseInt(peminjaman.getString("id_siswa"))));
+            Buku.setSelectedIndex(comboBukuID.indexOf(Integer.parseInt(peminjaman.getString("id_buku"))));
             try {
-                Tanggal.setDate(ADHhelper.getTanggalFromDB(pengembalian.getString("tanggal")));
+                Tanggal.setDate(ADHhelper.getTanggalFromDB(peminjaman.getString("tanggal_pengembalian")));
             } catch (ParseException ex) {
                 Logger.getLogger(Pengembalian.class.getName()).log(Level.SEVERE, null, ex);
             }

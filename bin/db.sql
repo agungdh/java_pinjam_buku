@@ -3,7 +3,7 @@
 -- Host: 127.0.0.1	Database: java_pinjam_buku
 -- ------------------------------------------------------
 -- Server version 	5.5.5-10.3.16-MariaDB
--- Date: Thu, 29 Aug 2019 10:49:53 +0200
+-- Date: Fri, 30 Aug 2019 04:15:36 +0200
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -57,7 +57,7 @@ CREATE TABLE `buku` (
   `pengarang` varchar(191) NOT NULL,
   `penerbit` varchar(191) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -67,45 +67,78 @@ CREATE TABLE `buku` (
 LOCK TABLES `buku` WRITE;
 /*!40000 ALTER TABLE `buku` DISABLE KEYS */;
 SET autocommit=0;
+INSERT INTO `buku` VALUES (1,'Novus Ordo Seclorum','Dunno','Gaktau Sapa Lupa'),(2,'Coding Is Funny (TAPI BOONG)','Sapa Yaaa','Gak Tau');
 /*!40000 ALTER TABLE `buku` ENABLE KEYS */;
 UNLOCK TABLES;
 COMMIT;
 
--- Dumped table `buku` with 0 row(s)
+-- Dumped table `buku` with 2 row(s)
 --
 
 --
--- Table structure for table `pinjam`
+-- Table structure for table `peminjaman`
 --
 
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `pinjam` (
+CREATE TABLE `peminjaman` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `id_siswa` int(11) NOT NULL,
   `id_buku` int(11) NOT NULL,
-  `tanggal_pinjam` date NOT NULL,
-  `tanggal_kembali` date DEFAULT NULL,
+  `tanggal` date NOT NULL,
   PRIMARY KEY (`id`),
   KEY `id_buku` (`id_buku`),
   KEY `id_siswa` (`id_siswa`),
-  CONSTRAINT `pinjam_ibfk_1` FOREIGN KEY (`id_buku`) REFERENCES `buku` (`id`),
-  CONSTRAINT `pinjam_ibfk_2` FOREIGN KEY (`id_siswa`) REFERENCES `siswa` (`id`)
+  CONSTRAINT `peminjaman_ibfk_1` FOREIGN KEY (`id_buku`) REFERENCES `buku` (`id`),
+  CONSTRAINT `peminjaman_ibfk_2` FOREIGN KEY (`id_siswa`) REFERENCES `siswa` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `pinjam`
+-- Dumping data for table `peminjaman`
 --
 
-LOCK TABLES `pinjam` WRITE;
-/*!40000 ALTER TABLE `pinjam` DISABLE KEYS */;
+LOCK TABLES `peminjaman` WRITE;
+/*!40000 ALTER TABLE `peminjaman` DISABLE KEYS */;
 SET autocommit=0;
-/*!40000 ALTER TABLE `pinjam` ENABLE KEYS */;
+/*!40000 ALTER TABLE `peminjaman` ENABLE KEYS */;
 UNLOCK TABLES;
 COMMIT;
 
--- Dumped table `pinjam` with 0 row(s)
+-- Dumped table `peminjaman` with 0 row(s)
+--
+
+--
+-- Table structure for table `pengembalian`
+--
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `pengembalian` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id_siswa` int(11) NOT NULL,
+  `id_buku` int(11) NOT NULL,
+  `tanggal` date NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `id_buku` (`id_buku`),
+  KEY `id_siswa` (`id_siswa`),
+  CONSTRAINT `pengembalian_ibfk_1` FOREIGN KEY (`id_buku`) REFERENCES `buku` (`id`),
+  CONSTRAINT `pengembalian_ibfk_2` FOREIGN KEY (`id_siswa`) REFERENCES `siswa` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `pengembalian`
+--
+
+LOCK TABLES `pengembalian` WRITE;
+/*!40000 ALTER TABLE `pengembalian` DISABLE KEYS */;
+SET autocommit=0;
+/*!40000 ALTER TABLE `pengembalian` ENABLE KEYS */;
+UNLOCK TABLES;
+COMMIT;
+
+-- Dumped table `pengembalian` with 0 row(s)
 --
 
 --
@@ -147,4 +180,4 @@ COMMIT;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on: Thu, 29 Aug 2019 10:49:53 +0200
+-- Dump completed on: Fri, 30 Aug 2019 04:15:36 +0200

@@ -35,7 +35,7 @@ public class Login extends javax.swing.JFrame {
     public Login() {
         initComponents();
         
-        String path = "src/main/resources/assets/2015-11-10.jpg";
+        String path = "src/main/resources/assets/large-perpustakaan-termegah-di-indonesia-akan-diresmikan-e555cdaf99f47a9bcfc0b6ebab7cafa6.jpg";
         ImageIcon MyImage = new ImageIcon(path);
         Image img = MyImage.getImage();
         Image newImg = img.getScaledInstance(Gambar.getWidth(), Gambar.getHeight(), Image.SCALE_SMOOTH);
